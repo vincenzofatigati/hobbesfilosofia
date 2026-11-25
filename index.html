@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hobbes – Ripasso 4BSC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday study, serio ma incoraggiante
+   IDEA il frontespizio del Leviatano: ogni risposta giusta aggiunge un suddito al corpo del sovrano
+   PICTURE il gigante coronato che si riempie di sudditi man mano che si superano i livelli
+   COLOUR bianco, inchiostro, cremisi del sovrano, blu dei sudditi
+   TYPE IM Fell English (stampa seicentesca) + Source Sans 3
+   LAYOUT titolo e progressi a sinistra, Leviatano a destra; su telefono titolo, figura, livelli */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#121318);--ink:light-dark(#16171b,#ecebe6);--mute:light-dark(#5b5e66,#a7aab2);--pane:light-dark(#f4f3f0,#1c1e25);--line:light-dark(#dcdad4,#33363f);--crim:light-dark(#b3122e,#ff7385);--blue:light-dark(#234a96,#93b2ff);--ok:light-dark(#1f7a3e,#6fd394);--ko:light-dark(#b3122e,#ff7385);--gold:light-dark(#a8740a,#f1c45a)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Source Sans 3",system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:"IM Fell English",Georgia,serif;font-weight:400;line-height:1.08;letter-spacing:-.01em;margin:0 0 .4em}
+h1{font-size:clamp(36px,6vw,54px)}h2{font-size:clamp(28px,4vw,38px)}h3{font-size:23px}
+p{margin:0 0 .7em}
+.band{padding:clamp(24px,4vw,56px) max(5vw,16px)}
+.wrap{max-width:1180px;margin:0 auto}
+.hero{background:var(--pane);border-bottom:1px solid var(--line)}
+.hgrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:center}
+.fig{position:relative;min-height:340px}
+.fig svg{position:absolute;inset:0;width:100%;height:100%}
+.lead{font-size:19px;color:var(--mute);max-width:36em}
+.name{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:18px 0}
+.name label{font-weight:600}
+input[type=text],textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:10px 12px}
+input[type=text]:focus,textarea:focus,button:focus-visible{outline:3px solid color-mix(in srgb,var(--blue) 55%,transparent);outline-offset:2px}
+.meter{height:12px;background:var(--bg);border:1px solid var(--line);border-radius:99px;overflow:hidden;max-width:420px}
+.meter i{display:block;height:100%;background:var(--crim);transition:width .5s}
+.ptxt{font-size:15px;color:var(--mute);margin-top:6px}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:6px;overflow-x:auto;padding:8px max(5vw,16px)}
+nav button{flex:none}
+button{font:inherit;font-size:16px;min-height:44px;padding:8px 16px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--ink)}
+button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.pri{background:var(--crim);border-color:var(--crim);color:#fff;font-weight:600}
+button:disabled{opacity:.45;cursor:not-allowed}
+.tab[data-lock="1"]::after{content:" 🔒"}
+.view{display:none}.view.show{display:block}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:16px}
+.card{background:var(--pane);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.card h3{color:var(--crim)}
+.card b{color:var(--ink)}
+.tag{display:inline-block;font-size:14px;font-weight:700;color:var(--blue);margin-bottom:4px}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.scroll{overflow-x:auto}
+.lvls{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:14px;margin-top:8px}
+.lv{text-align:left;padding:16px;border-radius:12px;background:var(--pane);min-height:110px;display:flex;flex-direction:column;gap:4px}
+.lv strong{font-family:"IM Fell English",Georgia,serif;font-size:22px;font-weight:400}
+.lv span{font-size:15px;color:var(--mute)}
+.stars{color:var(--gold);letter-spacing:2px}
+.item{border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:0 0 16px;background:var(--bg)}
+.q{font-weight:700;font-size:18px;margin-bottom:10px}
+.opts{display:grid;gap:8px}
+.opts button{text-align:left}
+.opts button.right,.chip.right{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--bg))}
+.opts button.wrong,.chip.wrong{border-color:var(--ko);background:color-mix(in srgb,var(--ko) 12%,var(--bg))}
+.fb{margin-top:10px;padding:10px 14px;border-radius:8px;background:var(--pane);font-size:16px}
+.fb.ok{border-left:4px solid var(--ok)}.fb.ko{border-left:4px solid var(--ko)}
+.pool,.ans{display:grid;gap:8px;margin:8px 0}
+.ans{min-height:60px;padding:10px;border:2px dashed var(--line);border-radius:10px}
+.chip{text-align:left;width:100%}
+.slot{display:grid;grid-template-columns:7.5em minmax(0,1fr);gap:8px;align-items:center}
+.slot em{font-style:normal;font-size:14px;font-weight:700;color:var(--blue)}
+.srt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.srt .bt{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.srt .bt button{font-size:15px;padding:6px 10px}
+.mark{font-weight:700;margin-left:6px}
+.keys{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.keys span{font-size:14px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);color:var(--mute)}
+.keys span.hit{border-color:var(--ok);color:var(--ok);font-weight:700}
+textarea{width:100%;min-height:170px;line-height:1.5}
+.moves{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:12px;margin:14px 0}
+.mv{border-top:4px solid var(--c);padding:12px 14px;background:var(--pane);border-radius:0 0 10px 10px}
+.mv b{color:var(--c)}
+.m1{--c:var(--crim)}.m2{--c:var(--blue)}.m3{--c:var(--gold)}.m4{--c:var(--ok)}
+.hl1{background:color-mix(in srgb,var(--crim) 16%,transparent)}.hl2{background:color-mix(in srgb,var(--blue) 16%,transparent)}.hl3{background:color-mix(in srgb,var(--gold) 22%,transparent)}.hl4{background:color-mix(in srgb,var(--ok) 18%,transparent)}
+.res{border:2px solid var(--crim);border-radius:12px;padding:20px;text-align:center;margin-top:12px}
+.res .stars{font-size:32px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.small{font-size:14px;color:var(--mute)}
+.mind{max-width:420px;margin:0 auto;color:var(--ink)}
+details summary{cursor:pointer;font-weight:600;min-height:44px;display:flex;align-items:center}
+@media(max-width:760px){.hgrid{grid-template-columns:1fr}.fig{min-height:280px}}
+@media(max-width:600px){.slot{grid-template-columns:1fr}.srt{grid-template-columns:1fr}.srt .bt{justify-content:flex-start}}
+@media(prefers-reduced-motion:reduce){.meter i{transition:none}}
+</style>
+</head>
+<body>
+<header class="band hero">
+ <div class="wrap hgrid">
+  <div>
+   <h1>Thomas Hobbes:<br>ripasso a livelli</h1>
+   <p class="lead">Classe 4BSC. Prima studia la scheda, poi supera i sei livelli: ogni livello si sblocca con almeno il 70%. Alla fine saprai rispondere anche a una domanda aperta strutturata.</p>
+   <div class="name"><label for="nm">Il tuo nome</label><input type="text" id="nm" placeholder="Nome e cognome" autocomplete="off"></div>
+   <div class="meter" aria-hidden="true"><i id="bar" style="width:0"></i></div>
+   <div class="ptxt" id="ptxt"></div>
+  </div>
+  <div class="fig" aria-label="Il Leviatano si riempie di sudditi a ogni risposta giusta"><svg id="lev"></svg></div>
+ </div>
+</header>
+
+<nav><div class="wrap" id="tabs"></div></nav>
+
+<main class="band"><div class="wrap">
+
+<section class="view" id="v-studia">
+ <h2>Scheda di studio</h2>
+ <p class="lead">Leggi tutto con attenzione: nei livelli ritroverai esattamente questi concetti.</p>
+ <div class="cards">
+  <div class="card"><span class="tag">La vita</span><h3>Un'esistenza segnata dalla paura</h3><p>Nasce a <b>Westport</b> (Malmesbury) nel <b>1588</b>, l'anno dell'Invincibile Armata: «io e la paura nascemmo gemelli». Precettore dei <b>Cavendish</b>, segretario di <b>Bacone</b>, incontra <b>Galilei</b> e a Parigi frequenta Mersenne; scrive le <b>Obiezioni</b> alle Meditazioni di Cartesio. Vive la guerra civile inglese (Carlo I decapitato nel 1649). Opere: <i>De cive</i> (1642), <b><i>Leviatano</i></b> (1651), <i>De corpore</i> (1655), <i>De homine</i> (1658). Muore nel <b>1679</b>.</p></div>
+  <div class="card"><span class="tag">Materialismo</span><h3>Esistono solo i corpi</h3><p>Hobbes rifiuta il dualismo di Cartesio: esiste solo la <b>res extensa</b>, cioè <b>corpi e movimenti</b>. Tutto segue <b>rigidi rapporti di causa-effetto</b> (meccanicismo). Quindi <b>non esiste il libero arbitrio</b> e <b>non esiste un'anima immateriale</b>.</p><p>Anche la mente è movimento: la <b>sensazione</b> nasce dal movimento dei corpi esterni sugli organi di senso; ciò che resta del movimento forma la <b>memoria</b>; tanti ricordi formano l'<b>esperienza</b>.</p></div>
+  <div class="card"><span class="tag">Ragione e linguaggio</span><h3>Ragionare è calcolare</h3><p>La ragione forma i <b>concetti</b>, che sono <b>segni</b> che raggruppano più individui (esistono solo cose singole). I concetti si uniscono in <b>giudizi</b>, i giudizi in <b>sillogismi</b>: ragionare è un <b>calcolo</b> di <b>addizioni e sottrazioni</b>.</p><p>I concetti sono espressi da <b>termini</b>, il cui significato è <b>convenzionale</b>: per questo bisogna partire da definizioni precise, come in geometria. Il calcolo serve a <b>prevedere</b> e a scegliere ciò che è utile.</p></div>
+  <div class="card"><span class="tag">Bene e male</span><h3>Utile o dannoso</h3><p>Come ogni animale, l'uomo è mosso dall'<b>autoconservazione</b>. Chiama <b>bene</b> ciò che desidera perché utile alla propria vita, <b>male</b> ciò che fugge perché dannoso. Bene e male non sono valori assoluti: dipendono da chi li valuta.</p></div>
+  <div class="card"><span class="tag">Stato di natura</span><h3>La guerra di tutti contro tutti</h3><p>È una <b>situazione ipotetica</b> (un modello, non un'epoca storica) in cui <b>non esiste lo Stato</b>. Ognuno ha il <b>diritto naturale</b> su tutto (<i>ius in omnia</i>). Gli uomini sono <b>uguali</b> (anche il più debole può uccidere il più forte), i beni sono <b>scarsi</b>, ambizione e avidità li spingono a competere: ne nasce la <b>guerra di tutti contro tutti</b> (<i>bellum omnium contra omnes</i>). <b>Homo homini lupus</b>: la vita è solitaria, misera, breve, sotto la minaccia della <b>morte violenta</b>.</p><p>Contro <b>Aristotele</b>: l'uomo <b>non</b> è per natura un animale politico.</p></div>
+  <div class="card"><span class="tag">Leggi di natura</span><h3>La ragione suggerisce la pace</h3><p>La ragione «calcolatrice» indica le <b>leggi di natura</b>, regole per conservare la vita:</p><p>1. <b>cercare la pace</b>;<br>2. <b>rinunciare al diritto su tutto</b>, se anche gli altri lo fanno;<br>3. <b>rispettare i patti</b>.</p><p>Da sole però sono <b>inefficaci</b>: senza un potere che le faccia rispettare con la forza, nessuno ha interesse a obbedirvi per primo.</p></div>
+  <div class="card"><span class="tag">Il contratto</span><h3>Come nasce lo Stato</h3><p>Gli individui stipulano un <b>contratto</b>: ciascuno <b>rinuncia al diritto su tutto</b> e lo <b>cede a un sovrano</b> (una persona o un'assemblea, una <b>persona giuridica</b>). È il <b>contrattualismo</b>.</p><p>Il contratto è insieme <b>patto di unione</b> (<i>pactum unionis</i>: nasce la società civile) e <b>patto di soggezione</b> (<i>pactum subiectionis</i>: ci si sottomette al sovrano). In Hobbes i due patti <b>coincidono</b>. Il patto è <b>tra i sudditi</b>: il sovrano <b>non vi partecipa</b>.</p></div>
+  <div class="card"><span class="tag">Lo Stato assoluto</span><h3>Il Leviatano, «Dio mortale»</h3><p>Il sovrano è <b>sciolto da ogni obbligo</b>: il suo potere è <b>assoluto</b> e <b>indivisibile</b>. La <b>ribellione è inammissibile</b>. Ai sudditi resta un solo diritto: <b>la vita</b> (il diritto a evitare la morte), perché per proteggerla hanno ceduto tutto il resto.</p><p>Il <b>Leviatano</b> è il mostro biblico del libro di Giobbe: terribile verso chi si ribella, benevolo perché garantisce <b>pace e sicurezza</b>.</p></div>
+  <div class="card"><span class="tag">Diritto positivo</span><h3>Giusto è ciò che stabilisce la legge</h3><p>Nello Stato si passa dal <b>diritto naturale</b> al <b>diritto positivo</b>: l'insieme delle leggi «poste» dal sovrano. È il sovrano a stabilire che cosa è <b>giusto</b> e <b>ingiusto</b>, <b>bene</b> e <b>male</b>. Nello stato di natura giusto e ingiusto non esistono.</p></div>
+ </div>
+
+ <h2 style="margin-top:36px">Mappa e tabella</h2>
+ <div class="cards">
+  <div class="card"><div class="mind"><svg viewBox="0 0 360 335" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mappa: autoconservazione, diritto naturale, legge di natura"><rect x="65" y="5" width="230" height="47" rx="8" fill="#64748b" fill-opacity=".12" stroke="#64748b"/><text x="180" y="24" text-anchor="middle" font-size="13" font-weight="bold" fill="currentColor">AUTOCONSERVAZIONE</text><text x="180" y="41" text-anchor="middle" font-size="12" fill="currentColor">Conservare la propria vita</text><path d="M180 52 V69 H86 V85 M180 69 H274 V85" fill="none" stroke="currentColor" stroke-opacity=".5" stroke-width="1.5"/><rect x="3" y="85" width="166" height="86" rx="8" fill="#2563eb" fill-opacity=".08" stroke="#2563eb"/><text x="86" y="105" text-anchor="middle" font-size="12" font-weight="bold" fill="#2563eb">DIRITTO NATURALE</text><g font-size="12" text-anchor="middle" fill="currentColor"><text x="86" y="125">LIBERTÀ</text><text x="86" y="144">Usare ogni mezzo</text><text x="86" y="158">per sopravvivere</text></g><rect x="191" y="85" width="166" height="86" rx="8" fill="#0d9488" fill-opacity=".08" stroke="#0d9488"/><text x="274" y="105" text-anchor="middle" font-size="12" font-weight="bold" fill="#0d9488">LEGGE DI NATURA</text><g font-size="12" text-anchor="middle" fill="currentColor"><text x="274" y="125">RAGIONE</text><text x="274" y="144">Seguire regole</text><text x="274" y="158">per sopravvivere</text></g><path d="M86 171 V190 M274 171 V190" stroke="currentColor" stroke-opacity=".5" fill="none"/><rect x="3" y="190" width="166" height="55" rx="7" fill="#dc2626" fill-opacity=".07" stroke="#dc2626"/><text x="86" y="210" text-anchor="middle" font-size="12" font-weight="bold" fill="#dc2626">DIRITTO A TUTTO</text><text x="86" y="230" text-anchor="middle" font-size="12" fill="currentColor">Rischio di conflitto</text><rect x="191" y="190" width="166" height="106" rx="7" fill="#0d9488" fill-opacity=".07" stroke="#0d9488"/><text x="274" y="209" font-weight="bold" font-size="12" text-anchor="middle" fill="#0d9488">TRE REGOLE</text><g font-size="11" fill="currentColor" text-anchor="middle"><text x="274" y="230">1. Cercare la pace</text><text x="274" y="250">2. Limitare la libertà</text><text x="274" y="264">reciprocamente</text><text x="274" y="284">3. Rispettare i patti</text></g><path d="M274 296 V306" stroke="#0d9488" stroke-width="2"/><rect x="191" y="306" width="166" height="26" rx="7" fill="#0d9488" fill-opacity=".15" stroke="#0d9488"/><text x="274" y="323" text-anchor="middle" font-size="12" font-weight="bold" fill="#0d9488">PACE E SICUREZZA</text></svg></div></div>
+  <div class="card"><h3>Le prime tre leggi di natura</h3><div class="scroll"><table><thead><tr><th>Legge</th><th>Significato semplice</th></tr></thead><tbody><tr><td><b>1. Cercare la pace</b></td><td>Evitare la guerra quando è possibile.</td></tr><tr><td><b>2. Rinunciare al diritto su tutto</b></td><td>Limitare la propria libertà, se anche gli altri lo fanno.</td></tr><tr><td><b>3. Rispettare i patti</b></td><td>Mantenere gli accordi presi con gli altri.</td></tr></tbody></table></div>
+   <h3 style="margin-top:18px">Da ricordare</h3><p><b>Diritto naturale</b> = ciò che <i>posso</i> fare per sopravvivere.<br><b>Legge di natura</b> = ciò che la ragione mi <i>suggerisce</i> di fare per sopravvivere.</p></div>
+ </div>
+ <div class="row"><button class="pri" data-go="metodo">Ho studiato: come si risponde?</button></div>
+</section>
+
+<section class="view" id="v-metodo">
+ <h2>Come si risponde a una domanda strutturata</h2>
+ <p class="lead">Una buona risposta di filosofia non è un elenco di parole: è un ragionamento in quattro mosse. Usale sempre, anche all'interrogazione.</p>
+ <div class="moves">
+  <div class="mv m1"><b>1. Definisci</b><br>Rispondi subito alla domanda e definisci il concetto con i termini dell'autore.</div>
+  <div class="mv m2"><b>2. Spiega</b><br>Dici perché e come: cause, passaggi del ragionamento.</div>
+  <div class="mv m3"><b>3. Esempio o collegamento</b><br>Un esempio concreto, oppure un confronto (Cartesio, Aristotele).</div>
+  <div class="mv m4"><b>4. Concludi</b><br>Dici a che cosa porta: la conseguenza nel sistema di Hobbes.</div>
+ </div>
+ <div class="card">
+  <h3>Esempio: «Che differenza c'è tra diritto naturale e legge di natura?»</h3>
+  <p><span class="hl1">Secondo Hobbes, il diritto naturale è la libertà di utilizzare tutti i mezzi per conservare la propria vita, mentre la legge di natura è una regola suggerita dalla ragione.</span> <span class="hl2">Il diritto naturale, infatti, nello stato di natura dà a ognuno un diritto su tutto e quindi genera conflitti; attraverso la ragione, invece, l'uomo comprende che è più conveniente cercare la pace, limitare reciprocamente la propria libertà e rispettare i patti.</span> <span class="hl3">Per esempio, se due uomini vogliono lo stesso cibo per sopravvivere, entrambi hanno il diritto di prenderlo, ma questo porta allo scontro.</span> <span class="hl4">Queste sono le prime tre leggi di natura, che preparano la nascita dello Stato.</span></p>
+  <p class="small">I colori corrispondono alle quattro mosse.</p>
+ </div>
+ <div class="card" style="margin-top:16px"><h3>Errori da evitare</h3><p>Partire dalla biografia quando la domanda chiede un concetto. Usare parole vaghe («la gente», «tipo»). Confondere Hobbes con altri autori (per Hobbes il sovrano <b>non</b> firma il contratto; lo stato di natura <b>non</b> è un'epoca storica). Elencare termini senza collegarli con <i>perché</i>, <i>quindi</i>, <i>infatti</i>, <i>di conseguenza</i>.</p></div>
+ <div class="row"><button class="pri" data-go="livelli">Vai ai livelli</button></div>
+</section>
+
+<section class="view" id="v-livelli">
+ <h2>I sei livelli</h2>
+ <p class="lead">Dal più semplice al più difficile. Ogni livello si sblocca superando il precedente con almeno il 70%. Puoi ripetere ogni livello per migliorare il punteggio.</p>
+ <div class="lvls" id="lvls"></div>
+ <div class="row" style="margin-top:24px"><button id="reset">Ricomincia da capo</button><button id="teach">Docente: sblocca tutti i livelli</button></div>
+</section>
+
+<section class="view" id="v-play"><div id="play"></div></section>
+
+</div></main>
+
+<script>
+{
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+
+const LV=[
+{t:'Le parole chiave',d:'Riconosci i concetti di base',type:'mc',items:[
+ {q:'Che cos\'è il materialismo di Hobbes?',o:['L\'idea che esistono soltanto i corpi e i loro movimenti','L\'idea che la ricchezza materiale sia il fine della vita','L\'idea che esistano due sostanze, pensante ed estesa','L\'idea che la materia sia un\'illusione dei sensi'],why:'Per Hobbes tutto è corpo: anche il pensiero è movimento di particelle.'},
+ {q:'Che cosa significa che per Hobbes «ragionare è calcolare»?',o:['Ragionare è sommare e sottrarre concetti','Ragionare serve solo per la matematica','Si ragiona bene solo usando i numeri','Il ragionamento è un dono divino'],why:'I concetti si uniscono in giudizi e i giudizi in sillogismi: un calcolo di addizioni e sottrazioni.'},
+ {q:'Che cos\'è il diritto naturale?',o:['La libertà di usare ogni mezzo per conservare la propria vita','L\'insieme delle leggi scritte dal sovrano','Una regola della ragione che impone la pace','Il diritto del sovrano a comandare'],why:'È ciò che posso fare per sopravvivere: nello stato di natura diventa diritto su tutto.'},
+ {q:'Che cos\'è una legge di natura?',o:['Una regola suggerita dalla ragione per conservare la vita','Una legge della fisica come la gravità','Una legge emanata dal sovrano','L\'istinto di aggredire gli altri'],why:'Le leggi di natura sono i consigli della ragione: cercare la pace, rinunciare al diritto su tutto, rispettare i patti.'},
+ {q:'Che cos\'è lo stato di natura?',o:['Una condizione ipotetica in cui non esiste lo Stato','Il periodo della preistoria','La vita in campagna, lontano dalle città','Lo Stato governato secondo natura'],why:'È un modello esplicativo: serve a capire che cosa sarebbero gli uomini senza Stato.'},
+ {q:'Che cosa significa «homo homini lupus»?',o:['Ogni uomo è un lupo per l\'altro uomo','L\'uomo è un animale sociale','L\'uomo deve imitare gli animali','Gli uomini devono difendersi dai lupi'],why:'Nello stato di natura ognuno è una minaccia per l\'altro.'},
+ {q:'Che cos\'è il contrattualismo?',o:['La teoria che fonda lo Stato su un patto tra gli individui','La teoria secondo cui lo Stato nasce da Dio','La scienza dei contratti commerciali','La teoria della divisione dei poteri'],why:'La legittimità del potere deriva da un contratto stipulato dagli individui.'},
+ {q:'Che cosa rappresenta il Leviatano?',o:['Lo Stato, come un mostro potentissimo','Il popolo che si ribella','La Chiesa d\'Inghilterra','La guerra civile'],why:'È il mostro biblico del libro di Giobbe: Hobbes lo usa come immagine dello Stato, «Dio mortale».'},
+ {q:'Che cos\'è il diritto positivo?',o:['L\'insieme delle leggi poste dal sovrano','Il diritto di essere ottimisti','Il diritto di ciascuno su tutto','Le regole morali universali'],why:'«Positivo» viene da «posto»: sono le leggi stabilite dallo Stato.'},
+ {q:'Che cos\'è l\'autoconservazione?',o:['La tendenza di ogni essere a conservare la propria vita','La conservazione dei beni dello Stato','Il rispetto delle tradizioni','La memoria delle sensazioni'],why:'È la spinta fondamentale da cui dipendono bene, male, diritto naturale e leggi di natura.'}
+]},
+{t:'Vero o falso?',d:'Scova gli errori tipici',type:'tf',items:[
+ {s:'Lo stato di natura è un\'epoca storica realmente esistita.',v:false,why:'È un\'ipotesi, un modello per capire la natura umana senza Stato.'},
+ {s:'Per Hobbes esistono soltanto i corpi e i loro movimenti.',v:true,why:'È il cuore del suo materialismo.'},
+ {s:'Hobbes, come Cartesio, ammette una sostanza pensante distinta dal corpo.',v:false,why:'Hobbes rifiuta il dualismo: anche il pensiero è movimento di corpi.'},
+ {s:'Per Hobbes l\'uomo è libero perché possiede il libero arbitrio.',v:false,why:'Il comportamento umano è determinato da cause ed effetti: il libero arbitrio non esiste.'},
+ {s:'Nello stato di natura ognuno ha diritto su tutto.',v:true,why:'Il diritto naturale diventa diritto di tutti su tutto, e quindi guerra.'},
+ {s:'Le leggi di natura bastano da sole a garantire la pace.',v:false,why:'Sono inefficaci senza un potere che le faccia rispettare con la forza.'},
+ {s:'Il contratto è stipulato tra i sudditi e il sovrano.',v:false,why:'Il patto è solo tra i sudditi; il sovrano non vi partecipa e non ha obblighi.'},
+ {s:'Il sovrano può essere una sola persona oppure un\'assemblea.',v:true,why:'È una persona giuridica: monarchia, aristocrazia o democrazia.'},
+ {s:'Se le leggi sembrano ingiuste, i sudditi hanno il diritto di ribellarsi.',v:false,why:'Per Hobbes la ribellione è inammissibile: riporterebbe allo stato di natura.'},
+ {s:'L\'unico diritto che i sudditi conservano è quello alla vita.',v:true,why:'Hanno ceduto tutto il resto proprio per avere in cambio la sicurezza.'},
+ {s:'Per Hobbes bene e male sono valori assoluti, uguali per tutti.',v:false,why:'Bene è ciò che è utile alla propria conservazione, male ciò che è dannoso; nello Stato li stabilisce il sovrano.'},
+ {s:'Per Hobbes, come per Aristotele, l\'uomo è per natura un animale politico.',v:false,why:'Hobbes critica Aristotele: la società nasce da un calcolo, non da un istinto naturale.'}
+]},
+{t:'Metti in ordine',d:'Ricostruisci il ragionamento',type:'order',items:[
+ {q:'Dallo stato di natura allo Stato: tocca i passaggi nell\'ordine giusto.',s:['Ogni uomo cerca di conservare la propria vita.','Senza Stato, ciascuno ha diritto su tutto.','Uguaglianza e scarsità dei beni portano alla guerra di tutti contro tutti.','La vita è misera, sotto la minaccia della morte violenta.','La ragione suggerisce le leggi di natura: pace, rinuncia, rispetto dei patti.','Le leggi da sole non bastano: gli uomini stipulano il contratto.','Nasce lo Stato-Leviatano, con un sovrano dal potere assoluto.']},
+ {q:'Dalla sensazione al ragionamento: tocca i passaggi nell\'ordine giusto.',s:['I corpi esterni muovono i nostri organi di senso: sensazione.','Il movimento che resta forma la memoria.','Molti ricordi formano l\'esperienza.','La ragione forma i concetti, segni che raggruppano più individui.','I concetti si uniscono in giudizi.','I giudizi si uniscono in sillogismi: il ragionamento come calcolo.','Il calcolo permette di prevedere e scegliere ciò che è utile.']}
+]},
+{t:'Distingui',d:'Metti ogni frase al suo posto',type:'sort',items:[
+ {q:'Diritto naturale o legge di natura?',a:'Diritto naturale',b:'Legge di natura',c:[['Libertà di usare ogni mezzo per sopravvivere',0],['Regola suggerita dalla ragione',1],['Porta al diritto su tutto',0],['Cercare la pace',1],['Genera il conflitto',0],['Rispettare i patti',1],['Ciò che posso fare',0],['Ciò che mi conviene fare',1]]},
+ {q:'Stato di natura o Stato civile?',a:'Stato di natura',b:'Stato civile',c:[['Giusto e ingiusto non esistono',0],['Le leggi del sovrano stabiliscono il giusto',1],['Guerra di tutti contro tutti',0],['Pace e sicurezza',1],['Ciascuno decide da sé che cosa è bene',0],['Vale il diritto positivo',1],['Vita breve e misera',0],['Il sovrano è l\'unico giudice',1]]},
+ {q:'Hobbes o Cartesio?',a:'Hobbes',b:'Cartesio',c:[['Esiste solo la res extensa',0],['Res cogitans e res extensa sono due sostanze',1],['Il pensiero è movimento di corpi',0],['L\'anima è immateriale',1],['Non esiste il libero arbitrio',0],['La volontà è libera',1]]},
+ {q:'Patto di unione o patto di soggezione?',a:'Unione',b:'Soggezione',c:[['Gli individui si uniscono e formano la società civile',0],['Gli individui si sottomettono al sovrano',1],['Pactum unionis',0],['Pactum subiectionis',1],['Nasce un corpo collettivo',0],['Si cedono i propri diritti a un\'autorità',1]]}
+]},
+{t:'Costruisci la risposta',d:'Scegli le frasi giuste e mettile in ordine',type:'build',items:[
+ {q:'Che cos\'è lo stato di natura e perché gli uomini ne escono?',slots:['Definisci','Spiega','Conseguenza','Soluzione','Concludi'],good:['Lo stato di natura è una condizione ipotetica in cui non esiste lo Stato e ognuno ha diritto su tutto.','Poiché gli uomini sono uguali, i beni scarsi e ciascuno cerca solo di conservarsi, nasce la guerra di tutti contro tutti.','La vita diventa misera e insicura: ogni uomo è un lupo per l\'altro e teme la morte violenta.','La ragione suggerisce allora le leggi di natura, ma per farle rispettare serve un potere: gli uomini stipulano un contratto.','Così nasce lo Stato, che garantisce pace e sicurezza in cambio della rinuncia al diritto su tutto.'],bad:[['Lo stato di natura è un periodo storico realmente esistito prima delle città.','Errore: è un\'ipotesi, non un fatto storico.'],['Gli uomini escono dallo stato di natura perché sono per natura animali politici.','Errore: questa è la tesi di Aristotele, che Hobbes critica.'],['Gli uomini firmano un contratto con il sovrano, che si impegna a rispettarli.','Errore: il sovrano non partecipa al contratto.']]},
+ {q:'Perché per Hobbes il potere del sovrano è assoluto?',slots:['Definisci','Spiega','Conseguenza','Motivo','Concludi'],good:['Per Hobbes il potere del sovrano è assoluto, cioè sciolto da ogni vincolo verso i sudditi.','Il contratto è stipulato solo tra i sudditi, che cedono al sovrano tutti i loro diritti.','Il sovrano quindi non ha obblighi, mentre i sudditi devono obbedire e non possono ribellarsi.','Un potere limitato o diviso riaprirebbe i conflitti e riporterebbe alla guerra civile.','Ai sudditi resta solo il diritto alla vita: lo Stato, il Leviatano, esiste per garantirla.'],bad:[['Il potere del sovrano è assoluto perché gli viene direttamente da Dio.','Errore: per Hobbes il potere nasce dal contratto, non dal diritto divino.'],['I sudditi possono revocare il sovrano quando non sono soddisfatti.','Errore: la ribellione è inammissibile.'],['Il sovrano deve rispettare la separazione dei poteri.','Errore: per Hobbes il potere è indivisibile.']]},
+ {q:'In che senso per Hobbes la ragione è un calcolo?',slots:['Definisci','Spiega','Esempio','Linguaggio','Concludi'],good:['Per Hobbes ragionare significa calcolare, cioè sommare e sottrarre concetti.','I concetti sono segni che raggruppano più individui; uniti formano giudizi, e i giudizi formano sillogismi.','Per esempio, unendo «uomo» e «mortale» ottengo il giudizio «l\'uomo è mortale».','I concetti sono espressi da termini, il cui significato è convenzionale: servono definizioni precise.','Il calcolo permette all\'uomo di prevedere e di scegliere ciò che è utile alla propria conservazione.'],bad:[['La ragione è una facoltà dell\'anima immateriale.','Errore: per Hobbes non esiste un\'anima immateriale.'],['Il significato delle parole è uguale in natura per tutti i popoli.','Errore: per Hobbes è convenzionale.'],['Ragionare serve a conoscere idee eterne separate dalle cose.','Errore: questa è una tesi platonica; per Hobbes esistono solo cose singole.']]}
+]},
+{t:'Rispondi tu',d:'La domanda aperta strutturata',type:'open',items:[
+ {q:'Spiega la differenza tra diritto naturale e legge di natura.',k:[['diritto naturale',/diritto natural/],['legge di natura',/legg[ei] di natura/],['libertà',/libert/],['autoconservazione',/autoconserv|conserva\w* la (propria )?vita|sopravviv/],['conflitto',/conflitt|guerra/],['ragione',/ragion/],['pace',/\bpace/],['patti',/\bpatt[oi]/]],m:'Secondo Hobbes, il diritto naturale è la libertà che ogni uomo ha di usare tutti i mezzi a sua disposizione per conservare la propria vita, mentre la legge di natura è una regola suggerita dalla ragione. Nello stato di natura il diritto naturale diventa diritto di tutti su tutto e genera conflitti: per esempio, se due uomini vogliono lo stesso cibo, entrambi hanno il diritto di prenderlo e quindi si scontrano. La ragione, invece, fa capire che conviene cercare la pace, rinunciare al diritto su tutto se anche gli altri lo fanno e rispettare i patti. In sintesi, il diritto naturale è ciò che posso fare, la legge di natura ciò che mi conviene fare per sopravvivere; le leggi di natura preparano la nascita dello Stato.'},
+ {q:'Descrivi lo stato di natura e spiega perché è una condizione di guerra.',k:[['ipotesi',/ipote|modell/],['diritto su tutto',/diritto (su|a) tutt/],['uguaglianza',/ugual/],['beni scarsi',/scars|\bbeni/],['guerra di tutti contro tutti',/guerra di tutti/],['homo homini lupus',/homo homini lupus|lupo/],['paura / morte violenta',/paura|morte violent/],['Aristotele',/aristotel|animale politic/]],m:'Lo stato di natura è una condizione ipotetica, non storica, in cui non esiste lo Stato e ognuno ha diritto su tutto. Diventa una guerra di tutti contro tutti perché gli uomini sono per natura uguali (anche il più debole può uccidere il più forte), i beni sono scarsi e ciascuno, spinto dall\'autoconservazione, dall\'ambizione e dall\'avidità, cerca di procurarseli. Nessuno è al sicuro: «homo homini lupus», ogni uomo è un lupo per l\'altro, e la vita è misera e breve, sotto la paura della morte violenta. Contro Aristotele, quindi, Hobbes nega che l\'uomo sia per natura un animale politico: la società nascerà da un calcolo della ragione.'},
+ {q:'Come nasce lo Stato secondo Hobbes e quali caratteristiche ha?',k:[['contratto',/contratt|\bpatto/],['rinuncia / cessione dei diritti',/rinunc|ced|trasfer/],['sovrano',/sovran/],['patto di unione',/unione/],['patto di soggezione',/soggezion/],['potere assoluto',/assolut/],['niente ribellione',/ribell/],['diritto alla vita',/\bvita/],['Leviatano',/leviatan/]],m:'Per Hobbes lo Stato nasce da un contratto: poiché le leggi di natura da sole non bastano, gli individui si accordano tra loro e ciascuno rinuncia al diritto su tutto, cedendolo a un sovrano, che può essere una persona o un\'assemblea. Il contratto è insieme patto di unione, con cui nasce la società civile, e patto di soggezione, con cui ci si sottomette al sovrano. Poiché il sovrano non partecipa al patto, il suo potere è assoluto e indivisibile, e la ribellione è inammissibile; ai sudditi resta soltanto il diritto alla vita. Hobbes paragona lo Stato al Leviatano, il mostro biblico, «Dio mortale» che garantisce pace e sicurezza e stabilisce con le sue leggi, il diritto positivo, che cosa è giusto e ingiusto.'},
+ {q:'In che senso per Hobbes la ragione è un calcolo? Collega la risposta al suo materialismo.',k:[['corpi e movimento',/corp|moviment/],['concetti',/concett/],['segni',/segn/],['giudizi',/giudiz/],['sillogismi',/sillogism/],['addizione / sottrazione',/addizion|somm|sottra/],['convenzionale',/convenzion/],['previsione / utile',/prev[ei]d|previs|util/]],m:'Per Hobbes ragionare significa calcolare, cioè sommare e sottrarre concetti. Questo dipende dal suo materialismo: esistono solo corpi in movimento, e anche la mente funziona come un meccanismo, dalla sensazione alla memoria all\'esperienza. La ragione forma i concetti, che sono segni che raggruppano più individui; i concetti uniti formano giudizi e i giudizi sillogismi, come in un\'addizione. Per esempio, unendo «uomo» e «mortale» ottengo «l\'uomo è mortale». I concetti sono espressi da termini il cui significato è convenzionale, per questo occorrono definizioni precise, come in geometria. Il calcolo serve infine a prevedere e a scegliere ciò che è utile alla propria conservazione.'}
+]}
+];
+
+const KEY='hobbes4bsc';
+let S={name:'',best:{},all:false};
+try{const r=localStorage.getItem(KEY);if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const unlocked=i=>S.all||i===0||(S.best[i-1]||0)>=70;
+const stars=p=>p>=100?'★★★':p>=85?'★★☆':p>=70?'★☆☆':'☆☆☆';
+
+/* Leviatano */
+const lev=$('#lev');const pts=[];
+{let s=7;const rnd=()=>(s=s*16807%2147483647)/2147483647;
+ const inBody=(x,y)=>{if(y>=118&&y<=262){const t=(y-118)/144,h=58+t*20;return Math.abs(x-200)<h}return false};
+ const inArm=(x,y)=>{const d=(px,py,ax,ay,bx,by)=>{const vx=bx-ax,vy=by-ay,u=Math.max(0,Math.min(1,((px-ax)*vx+(py-ay)*vy)/(vx*vx+vy*vy)));return Math.hypot(px-ax-u*vx,py-ay-u*vy)};return d(x,y,148,130,108,190)<13||d(x,y,252,130,292,190)<13};
+ for(let y=122;y<=258;y+=8)for(let x=110;x<=292;x+=8){const jx=x+(rnd()-.5)*3,jy=y+(rnd()-.5)*3;if(inBody(jx,jy)||inArm(jx,jy))pts.push([jx,jy])}
+}
+function drawLev(frac){
+ const n=Math.round(pts.length*frac);
+ const dots=pts.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.6" fill="${i<n?'var(--blue)':'none'}" stroke="var(--blue)" stroke-opacity="${i<n?0:.3}"/>`).join('');
+ lev.setAttribute('viewBox','0 0 400 300');lev.setAttribute('preserveAspectRatio','xMidYMid meet');
+ lev.innerHTML=`<path d="M0 262 Q90 236 170 252 T400 244 V300 H0Z" fill="var(--line)"/><path d="M0 276 Q120 262 230 272 T400 268 V300 H0Z" fill="color-mix(in srgb,var(--line) 60%,var(--pane))"/>
+ <g fill="var(--mute)" opacity=".55">${[30,48,62,320,338,356].map((x,i)=>`<rect x="${x}" y="${246-(i%3)*8}" width="12" height="${16+(i%3)*8}"/><path d="M${x-1} ${246-(i%3)*8}l7-7 7 7z"/>`).join('')}</g>
+ <path d="M142 118 Q200 104 258 118 L278 262 H122Z" fill="color-mix(in srgb,var(--blue) 7%,var(--bg))" stroke="var(--ink)" stroke-width="2"/>
+ <path d="M148 128 L104 196 M252 128 L296 196" stroke="var(--ink)" stroke-width="22" stroke-linecap="round" opacity=".08"/>
+ ${dots}
+ <line x1="100" y1="200" x2="88" y2="60" stroke="var(--ink)" stroke-width="3"/><path d="M84 66 L88 40 L92 66Z" fill="var(--ink)"/><line x1="80" y1="176" x2="112" y2="174" stroke="var(--ink)" stroke-width="3"/>
+ <line x1="300" y1="200" x2="314" y2="62" stroke="var(--ink)" stroke-width="3"/><path d="M314 62 q-14 -6 -6 -20 q10 -6 14 6" fill="none" stroke="var(--ink)" stroke-width="3"/>
+ <circle cx="200" cy="86" r="24" fill="var(--bg)" stroke="var(--ink)" stroke-width="2"/>
+ <path d="M188 92 q12 10 24 0" fill="none" stroke="var(--ink)" stroke-width="1.6"/><circle cx="191" cy="82" r="2" fill="var(--ink)"/><circle cx="209" cy="82" r="2" fill="var(--ink)"/>
+ <path d="M176 66 L180 44 L190 58 L200 38 L210 58 L220 44 L224 66Z" fill="var(--crim)" stroke="var(--ink)" stroke-width="1.5"/>
+ <text x="200" y="292" text-anchor="middle" font-family="IM Fell English,Georgia,serif" font-size="15" fill="var(--ink)">${n} sudditi su ${pts.length}</text>`;
+}
+
+function progress(){
+ const tot=LV.reduce((a,_,i)=>a+(S.best[i]||0),0)/(LV.length*100);
+ $('#bar').style.width=(tot*100).toFixed(0)+'%';
+ const done=LV.filter((_,i)=>(S.best[i]||0)>=70).length;
+ $('#ptxt').textContent=`Livelli superati: ${done} su ${LV.length} · punteggio complessivo ${Math.round(tot*100)}%`;
+ drawLev(tot);
+}
+
+const VIEWS=[['studia','Studia'],['metodo','Come si risponde'],['livelli','Livelli']];
+function tabs(cur){
+ $('#tabs').innerHTML=VIEWS.map(v=>`<button class="tab ${cur===v[0]?'on':''}" data-go="${v[0]}">${v[1]}</button>`).join('')+LV.map((l,i)=>`<button class="tab ${cur==='l'+i?'on':''}" data-lv="${i}" data-lock="${unlocked(i)?0:1}">Livello ${i+1}</button>`).join('');
+}
+function show(v){
+ document.querySelectorAll('.view').forEach(x=>x.classList.remove('show'));
+ if(v[0]==='l'){openLevel(+v.slice(1));return}
+ $('#v-'+v).classList.add('show');tabs(v);if(v==='livelli')renderLvls();
+ try{history.replaceState(null,'','#'+v)}catch(e){}
+}
+function renderLvls(){
+ $('#lvls').innerHTML=LV.map((l,i)=>{const u=unlocked(i),b=S.best[i];return `<button class="lv" data-lv="${i}" ${u?'':'disabled'}><strong>${i+1}. ${l.t}</strong><span>${l.d}</span><span class="stars">${b!=null?stars(b)+' '+b+'%':(u?'Da fare':'🔒 Bloccato')}</span></button>`}).join('');
+}
+
+/* gioco */
+let cur=null,sc=[];
+function openLevel(i){
+ if(!unlocked(i)){show('livelli');return}
+ cur=i;sc=LV[i].items.map(()=>null);
+ document.querySelectorAll('.view').forEach(x=>x.classList.remove('show'));
+ $('#v-play').classList.add('show');tabs('l'+i);
+ try{history.replaceState(null,'','#livello'+(i+1))}catch(e){}
+ const L=LV[i];
+ const intro={mc:'Scegli la definizione corretta. Dopo ogni risposta leggi la spiegazione.',tf:'Decidi se l\'affermazione è vera o falsa. Se è falsa, chiediti come correggerla prima di leggere la spiegazione.',order:'Tocca le frasi nell\'ordine giusto per ricostruire il ragionamento. Tocca una frase già scelta per toglierla.',sort:'Per ogni frase scegli la colonna giusta, poi premi Verifica.',build:'Costruisci una risposta strutturata: tocca 5 frasi nell\'ordine delle mosse. Attenzione: 3 frasi contengono errori tipici.',open:'Scrivi la tua risposta usando le quattro mosse. Le parole chiave si illuminano mentre scrivi. Poi confronta con la risposta modello.'}[L.type];
+ $('#play').innerHTML=`<h2>Livello ${i+1}: ${L.t}</h2><p class="lead">${intro}</p><div id="items">${L.items.map((it,j)=>`<div class="item" id="it${j}"></div>`).join('')}</div><div id="res"></div>`;
+ L.items.forEach((it,j)=>R[L.type](it,j));
+ window.scrollTo({top:0});
+}
+function done(j,v){sc[j]=v;if(sc.every(x=>x!==null))finish()}
+function finish(){
+ const p=Math.round(sc.reduce((a,b)=>a+b,0)/sc.length*100);
+ const prev=S.best[cur];if(prev==null||p>prev)S.best[cur]=p;save();progress();tabs('l'+cur);
+ const pass=p>=70,last=cur===LV.length-1;
+ $('#res').innerHTML=`<div class="res"><div class="stars">${stars(p)}</div><h3>${p}% ${pass?'· livello superato':'· non ancora'}</h3><p>${pass?(last?(S.name?esc(S.name)+', hai':'Hai')+' completato il ripasso di Hobbes. Ora prova a ripetere le risposte a voce, senza guardare.':'Bene! Il livello successivo è sbloccato.'):'Ti serve almeno il 70%. Rileggi la scheda di studio e riprova.'}</p><div class="row" style="justify-content:center"><button data-lv="${cur}">Ripeti il livello</button>${pass&&!last?`<button class="pri" data-lv="${cur+1}">Livello ${cur+2}</button>`:`<button data-go="studia">Torna alla scheda</button>`}</div></div>`;
+ $('#res').scrollIntoView({behavior:'smooth',block:'center'});
+}
+const fb=(ok,t)=>`<div class="fb ${ok?'ok':'ko'}"><b>${ok?'Giusto.':'Non è così.'}</b> ${t}</div>`;
+const R={
+ mc(it,j){const el=$('#it'+j);const o=shuf(it.o.map((t,k)=>[t,k===0]));
+  el.innerHTML=`<div class="q">${j+1}. ${it.q}</div><div class="opts">${o.map((x,k)=>`<button data-k="${k}">${x[0]}</button>`).join('')}</div><div class="f"></div>`;
+  el.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{const ok=o[+b.dataset.k][1];el.querySelectorAll('.opts button').forEach((c,k)=>{c.disabled=true;if(o[k][1])c.classList.add('right')});if(!ok)b.classList.add('wrong');el.querySelector('.f').innerHTML=fb(ok,it.why);done(j,ok?1:0)});},
+ tf(it,j){const el=$('#it'+j);
+  el.innerHTML=`<div class="q">${j+1}. ${it.s}</div><div class="row"><button data-v="1">Vero</button><button data-v="0">Falso</button></div><div class="f"></div>`;
+  el.querySelectorAll('button').forEach(b=>b.onclick=()=>{const ok=(b.dataset.v==='1')===it.v;el.querySelectorAll('button').forEach(c=>{c.disabled=true;if((c.dataset.v==='1')===it.v)c.classList.add('right')});if(!ok)b.classList.add('wrong');el.querySelector('.f').innerHTML=fb(ok,(it.v?'È vero. ':'È falso. ')+it.why);done(j,ok?1:0)});},
+ order(it,j){const el=$('#it'+j);let pool=shuf(it.s.map((t,k)=>k)),pick=[],locked=false;
+  const draw=()=>{el.innerHTML=`<div class="q">${j+1}. ${it.q}</div><div class="small">La tua sequenza</div><div class="ans">${pick.map((k,p)=>`<button class="chip" data-a="${p}">${p+1}. ${it.s[k]}</button>`).join('')||'<span class="small">Tocca le frasi qui sotto.</span>'}</div><div class="pool">${pool.map((k,p)=>`<button class="chip" data-p="${p}">${it.s[k]}</button>`).join('')}</div><div class="row"><button class="pri" id="ck${j}" ${pool.length?'disabled':''}>Verifica</button></div><div class="f"></div>`;
+   el.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{pick.push(pool.splice(+b.dataset.p,1)[0]);draw()});
+   el.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{pool.push(pick.splice(+b.dataset.a,1)[0]);draw()});
+   $('#ck'+j).onclick=()=>{let c=0;el.querySelectorAll('[data-a]').forEach((b,p)=>{b.disabled=true;const ok=pick[p]===p;if(ok)c++;b.classList.add(ok?'right':'wrong')});$('#ck'+j).disabled=true;
+    el.querySelector('.f').innerHTML=`<div class="fb ${c===it.s.length?'ok':'ko'}"><b>${c} passaggi su ${it.s.length} al posto giusto.</b><br>Ordine corretto:<br>${it.s.map((t,k)=>(k+1)+'. '+t).join('<br>')}</div>`;done(j,c/it.s.length)};
+  };draw();},
+ sort(it,j){const el=$('#it'+j);const cs=shuf(it.c);const ch=cs.map(()=>null);
+  el.innerHTML=`<div class="q">${j+1}. ${it.q}</div>${cs.map((c,k)=>`<div class="srt"><div>${c[0]}<span class="mark" id="m${j}_${k}"></span></div><div class="bt"><button data-k="${k}" data-v="0">${it.a}</button><button data-k="${k}" data-v="1">${it.b}</button></div></div>`).join('')}<div class="row"><button class="pri" id="ck${j}" disabled>Verifica</button></div><div class="f"></div>`;
+  el.querySelectorAll('.bt button').forEach(b=>b.onclick=()=>{const k=+b.dataset.k;ch[k]=+b.dataset.v;b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));$('#ck'+j).disabled=ch.includes(null)});
+  $('#ck'+j).onclick=()=>{let c=0;cs.forEach((x,k)=>{const ok=ch[k]===x[1];if(ok)c++;const m=$(`#m${j}_${k}`);m.textContent=ok?'✓':'✗ → '+(x[1]?it.b:it.a);m.style.color=ok?'var(--ok)':'var(--ko)'});el.querySelectorAll('button').forEach(b=>b.disabled=true);
+   el.querySelector('.f').innerHTML=`<div class="fb ${c===cs.length?'ok':'ko'}"><b>${c} su ${cs.length} corrette.</b>${j===3?' Ricorda: in Hobbes i due patti coincidono in un unico contratto.':''}</div>`;done(j,c/cs.length)};},
+ build(it,j){const el=$('#it'+j);const all=shuf([...it.good.map((t,k)=>({t,k})),...it.bad.map(b=>({t:b[0],k:-1,w:b[1]}))]);let pick=[];
+  const draw=()=>{const left=all.filter(x=>!pick.includes(x));
+   el.innerHTML=`<div class="q">${j+1}. ${it.q}</div><div class="ans">${it.slots.map((s,p)=>`<div class="slot"><em>${p+1}. ${s}</em>${pick[p]?`<button class="chip" data-a="${p}">${esc(pick[p].t)}</button>`:'<span class="small">…</span>'}</div>`).join('')}</div><div class="small">Frasi disponibili</div><div class="pool">${left.map(x=>`<button class="chip" data-p="${all.indexOf(x)}" ${pick.length>=it.slots.length?'disabled':''}>${esc(x.t)}</button>`).join('')}</div><div class="row"><button class="pri" id="ck${j}" ${pick.length<it.slots.length?'disabled':''}>Verifica</button></div><div class="f"></div>`;
+   el.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{pick.push(all[+b.dataset.p]);draw()});
+   el.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{pick.splice(+b.dataset.a,1);draw()});
+   $('#ck'+j).onclick=()=>{let c=0;const errs=[];el.querySelectorAll('[data-a]').forEach((b,p)=>{b.disabled=true;const x=pick[p];const ok=x.k===p;if(ok)c++;else if(x.k===-1)errs.push(x.w);b.classList.add(ok?'right':'wrong')});el.querySelectorAll('[data-p]').forEach(b=>b.disabled=true);$('#ck'+j).disabled=true;
+    el.querySelector('.f').innerHTML=`<div class="fb ${c===5?'ok':'ko'}"><b>${c} frasi su 5 giuste e al posto giusto.</b>${errs.length?'<br>'+errs.map(esc).join('<br>'):''}<br><br><b>Risposta modello:</b> ${it.good.map(esc).join(' ')}</div>`;done(j,c/it.slots.length)};
+  };draw();},
+ open(it,j){const el=$('#it'+j);
+  el.innerHTML=`<div class="q">${j+1}. ${it.q}</div><div class="small">Parole chiave da usare (non basta nominarle: collegale!)</div><div class="keys">${it.k.map(k=>`<span>${k[0]}</span>`).join('')}</div><textarea id="ta${j}" placeholder="Definisci, spiega, fai un esempio, concludi…"></textarea><div class="row"><span class="small" id="wc${j}">0 parole · consigliate 80–150</span></div><div class="row"><button class="pri" id="ck${j}">Ho finito: confronta</button><button id="cp${j}">Copia la risposta</button></div><div class="f"></div>`;
+  const ta=$('#ta'+j),sp=el.querySelectorAll('.keys span');
+  const upd=()=>{const t=ta.value.toLowerCase();let h=0;it.k.forEach((k,x)=>{const ok=k[1].test(t);sp[x].classList.toggle('hit',ok);if(ok)h++});const w=(ta.value.match(/\S+/g)||[]).length;$('#wc'+j).textContent=w+' parole · consigliate 80–150';return h};
+  ta.oninput=upd;
+  $('#cp'+j).onclick=()=>{try{navigator.clipboard.writeText(ta.value).then(()=>{$('#cp'+j).textContent='Copiata'},()=>{})}catch(e){}};
+  $('#ck'+j).onclick=()=>{const w=(ta.value.match(/\S+/g)||[]).length;if(w<25){el.querySelector('.f').innerHTML=fb(false,'Scrivi almeno 25 parole: una risposta strutturata ha bisogno di quattro mosse.');return}
+   const h=upd(),cov=h/it.k.length;
+   el.querySelector('.f').innerHTML=`<div class="fb ${cov>=.6?'ok':'ko'}"><b>Parole chiave usate: ${h} su ${it.k.length}.</b> ${cov>=.6?'Buona copertura dei concetti.':'Mancano concetti importanti: guarda quelli non illuminati.'}<br><br><b>Risposta modello:</b> ${esc(it.m)}<br><br><b>Autovalutazione</b><br>${['Ho risposto subito alla domanda (definizione)','Ho spiegato il perché con connettivi (perché, quindi, infatti)','Ho fatto un esempio o un confronto','Ho concluso con la conseguenza nel sistema di Hobbes'].map((r,x)=>`<label style="display:flex;gap:8px;align-items:center;min-height:36px"><input type="checkbox" id="sv${j}_${x}"> ${r}</label>`).join('')}</div>`;
+   $('#ck'+j).textContent='Confronta di nuovo';
+   if(sc[j]===null||cov>sc[j])done(j,Math.min(1,cov/.8));};}
+};
+
+/* eventi */
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]'),l=e.target.closest('[data-lv]');if(g){show(g.dataset.go);window.scrollTo({top:0})}else if(l&&!l.disabled){if(unlocked(+l.dataset.lv))openLevel(+l.dataset.lv)}});
+$('#nm').value=S.name||'';$('#nm').oninput=e=>{S.name=e.target.value;save()};
+const rs=$('#reset');rs.onclick=()=>{if(rs.dataset.c){S.best={};S.all=false;save();progress();renderLvls();tabs('livelli');rs.textContent='Ricomincia da capo';delete rs.dataset.c}else{rs.dataset.c=1;rs.textContent='Sicuro? Tocca di nuovo per cancellare i punteggi'}};
+$('#teach').onclick=()=>{S.all=!S.all;save();renderLvls();tabs('livelli');$('#teach').textContent=S.all?'Docente: blocca di nuovo i livelli':'Docente: sblocca tutti i livelli'};
+$('#teach').textContent=S.all?'Docente: blocca di nuovo i livelli':'Docente: sblocca tutti i livelli';
+progress();
+const h=(location.hash||'').slice(1),m=h.match(/^livello(\d)$/);
+if(m&&unlocked(+m[1]-1))openLevel(+m[1]-1);else show(['studia','metodo','livelli'].includes(h)?h:'studia');
+}
+</script>
+</body>
+</html>
